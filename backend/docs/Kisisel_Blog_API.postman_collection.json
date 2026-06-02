@@ -1,0 +1,482 @@
+{
+  "info": {
+    "_postman_id": "b3e34b7f-fbcd-42d3-9562-b9cf6d20387b",
+    "name": "Mert Karabulut Kişisel Blog API (Django)",
+    "description": "Mert Karabulut Kişisel Blog Web Sitesi Django REST API Uç Noktaları Koleksiyonu",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Kimlik Doğrulama (Auth)",
+      "item": [
+        {
+          "name": "Yönetici Girişi (Login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Yönetici girişi yaparak Django REST Token alır."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Hakkımda (About Me)",
+      "item": [
+        {
+          "name": "Hakkımda Getir",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/about",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "about"
+              ]
+            },
+            "description": "Hakkımda bilgilerini getirir (Ziyaretçi Görünümü)."
+          },
+          "response": []
+        },
+        {
+          "name": "Hakkımda Güncelle",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name_surname\": \"Mert Karabulut\",\n    \"age\": 21,\n    \"city\": \"İzmir\",\n    \"profession\": \"Bilişim Güvenliği Uzmanı\",\n    \"linkedin_url\": \"https://linkedin.com/in/mertkarabulut\",\n    \"github_url\": \"https://github.com/mertkarabulut\",\n    \"description\": \"İzmir Konak Meslek Yüksekokulu Bilişim Güvenliği Teknolojisi programı öğrencisiyim. Siber güvenlik ve modern web uygulama geliştirme konularında uzmanlaşmaktayım!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/about",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "about"
+              ]
+            },
+            "description": "Hakkımda alanını günceller (Sadece Admin)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Kategoriler (Categories)",
+      "item": [
+        {
+          "name": "Kategorileri Listele",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": [
+                {
+                  "key": "section_type",
+                  "value": "technical",
+                  "description": "Opsiyonel filtre: 'technical', 'non_technical', 'research', 'hobby', 'book'",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Kategorileri listeler."
+          },
+          "response": []
+        },
+        {
+          "name": "Yeni Kategori Ekle",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Sızma Testleri\",\n    \"section_type\": \"technical\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Yeni bir kategori ekler (Sadece Admin)."
+          },
+          "response": []
+        },
+        {
+          "name": "Kategori Güncelle",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Kablosuz Ağ Güvenliği\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "1"
+              ]
+            },
+            "description": "Kategori adını düzenler (Sadece Admin)."
+          },
+          "response": []
+        },
+        {
+          "name": "Kategori Sil",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "1"
+              ]
+            },
+            "description": "Kategoriyi siler (Sadece Admin)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blog Yazıları (Posts)",
+      "item": [
+        {
+          "name": "Yazıları Listele",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/posts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "posts"
+              ],
+              "query": [
+                {
+                  "key": "section_type",
+                  "value": "technical",
+                  "disabled": true
+                },
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Blog yazılarını getirir."
+          },
+          "response": []
+        },
+        {
+          "name": "Yazı Detayı Getir",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/posts/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "posts",
+                "1"
+              ]
+            },
+            "description": "Tek bir blog yazısının içeriğini getirir."
+          },
+          "response": []
+        },
+        {
+          "name": "Yeni Yazı Ekle",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "category_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "İlk Siber Tehdit Analizim",
+                  "type": "text"
+                },
+                {
+                  "key": "content",
+                  "value": "Bu yazıda, siber saldırıların nasıl analiz edileceğini ve log inceleme tekniklerini paylaşıyorum.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "description": "Görsel Dosyası (Seçimlik)",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/posts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "posts"
+              ]
+            },
+            "description": "Yeni blog yazısı ekler. Resim yükleme desteklidir (Sadece Admin)."
+          },
+          "response": []
+        },
+        {
+          "name": "Yazı Sil",
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "Token {{admin_token}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                },
+                {
+                  "key": "in",
+                  "value": "header",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/posts/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "posts",
+                "1"
+              ]
+            },
+            "description": "Blog yazısını siler (Sadece Admin)."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "Giriş yaptıktan sonra dönen token değerini (örn: 9944b091...) buraya giriniz.",
+      "type": "string"
+    }
+  ]
+}
