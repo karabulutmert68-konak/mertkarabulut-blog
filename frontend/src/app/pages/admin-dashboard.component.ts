@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
 import { ApiService, AboutMe, Category, ContentItem } from '../services/api.service';
 
-type SectionKey = 'hakkimda' | 'technical' | 'non_technical' | 'research' | 'hobby' | 'book';
+type SectionKey = 'hakkimda' | 'technical' | 'non_technical' | 'research' | 'hobby' | 'book' | 'users';
 
 const SECTIONS: { key: SectionKey; label: string }[] = [
   { key: 'hakkimda', label: 'Hakkımda' },
@@ -14,6 +14,7 @@ const SECTIONS: { key: SectionKey; label: string }[] = [
   { key: 'research', label: 'Araştırmalarım' },
   { key: 'hobby', label: 'Hobilerim' },
   { key: 'book', label: 'Okuduğum Kitaplar' },
+  { key: 'users', label: 'Kullanıcılar' },
 ];
 
 @Component({
@@ -112,6 +113,80 @@ const SECTIONS: { key: SectionKey; label: string }[] = [
           <button class="btn btn-primary" style="margin-top:8px; padding:12px 32px;" (click)="saveAboutMe()" [disabled]="saving">
             {{ saving ? 'Kaydediliyor...' : '💾 Kaydet' }}
           </button>
+        </div>
+      </div>
+
+      <!-- ===================== KULLANICILAR SECTION ===================== -->
+      <div *ngIf="activeSection === 'users'">
+        <div class="glass-card" style="max-width:900px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 style="color:var(--primary); font-size:1.4rem; margin:0;">Kayıtlı Kullanıcılar</h2>
+            <button class="btn btn-primary" style="padding:8px 18px;" (click)="openUserForm()">+ Kullanıcı Ekle</button>
+          </div>
+
+          <!-- Kullanıcı Ekleme Formu -->
+          <div *ngIf="showUserForm" class="inline-form" style="margin-bottom:20px;">
+            <div class="form-grid" style="margin-bottom:12px;">
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem;">Kullanıcı Adı *</label>
+                <input type="text" class="form-control" [(ngModel)]="userForm.username" placeholder="kullanici_adi">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem;">E-posta</label>
+                <input type="email" class="form-control" [(ngModel)]="userForm.email" placeholder="mail@example.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:0.8rem;">Şifre *</label>
+                <input type="password" class="form-control" [(ngModel)]="userForm.password" placeholder="••••••••">
+              </div>
+              <div class="form-group" style="display:flex; align-items:center; gap:10px; padding-top:24px;">
+                <input type="checkbox" id="isStaffChk" [(ngModel)]="userForm.is_staff" style="width:16px; height:16px; cursor:pointer;">
+                <label for="isStaffChk" style="font-size:0.9rem; color:var(--text-muted); cursor:pointer; margin:0;">Admin (Yönetici) Yetkisi</label>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-primary" style="padding:8px 24px;" (click)="saveUser()" [disabled]="saving">Oluştur</button>
+              <button class="btn btn-outline" style="padding:8px 16px;" (click)="cancelUserForm()">İptal</button>
+            </div>
+          </div>
+
+          <div *ngIf="loadingUsers" style="color:var(--text-muted); padding:20px 0;">Yükleniyor...</div>
+
+          <!-- Kullanıcı Tablosu -->
+          <div *ngIf="!loadingUsers" class="user-table-wrap">
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Kullanıcı Adı</th>
+                  <th>E-posta</th>
+                  <th>Kayıt Tarihi</th>
+                  <th>Yetki</th>
+                  <th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let u of users">
+                  <td style="color:var(--text-dim);">{{ u.id }}</td>
+                  <td><strong>{{ u.username }}</strong></td>
+                  <td style="color:var(--text-muted);">{{ u.email || '—' }}</td>
+                  <td style="color:var(--text-dim); font-size:0.82rem;">{{ u.date_joined | date:'dd.MM.yyyy HH:mm' }}</td>
+                  <td>
+                    <span class="badge" [class.badge-primary]="u.is_staff" style="font-size:0.75rem;">
+                      {{ u.is_staff ? 'Admin' : 'Kullanıcı' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="icon-btn danger" title="Sil" (click)="deleteUser(u)" [disabled]="u.id === currentUserId">🗑️</button>
+                  </td>
+                </tr>
+                <tr *ngIf="users.length === 0">
+                  <td colspan="6" style="text-align:center; color:var(--text-dim); padding:20px;">Kullanıcı yok.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p style="font-size:0.82rem; color:var(--text-dim); margin-top:12px;">Toplam: {{ users.length }} kullanıcı</p>
+          </div>
         </div>
       </div>
 
@@ -358,6 +433,29 @@ const SECTIONS: { key: SectionKey; label: string }[] = [
     }
     .toast-notification.show { opacity: 1; transform: translateY(0); }
 
+    .user-table-wrap { overflow-x: auto; }
+    .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .user-table th {
+      text-align: left;
+      padding: 10px 14px;
+      color: var(--text-dim);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+    .user-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .user-table tr:hover td { background: rgba(255,255,255,0.02); }
+
     @media (max-width: 768px) {
       .form-grid { grid-template-columns: 1fr; }
       .form-grid .form-group[style*="span 2"] { grid-column: span 1 !important; }
@@ -393,6 +491,13 @@ export class AdminDashboardComponent implements OnInit {
   public items: ContentItem[] = [];
   public loadingItems = false;
 
+  // Users
+  public users: any[] = [];
+  public loadingUsers = false;
+  public showUserForm = false;
+  public userForm = { username: '', email: '', password: '', is_staff: false };
+  public currentUserId: number | null = null;
+
   // Item form
   public showItemForm = false;
   public editingItemId: string | null = null;
@@ -401,7 +506,10 @@ export class AdminDashboardComponent implements OnInit {
   constructor(private auth: AuthService, private api: ApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.auth.getCurrentUser().subscribe(u => this.user = u);
+    this.auth.getCurrentUser().subscribe(u => {
+      this.user = u;
+      this.currentUserId = u?.id ?? null;
+    });
     this.loadAboutMe();
   }
 
@@ -415,6 +523,8 @@ export class AdminDashboardComponent implements OnInit {
     this.cancelItemForm();
     if (key === 'hakkimda') {
       this.loadAboutMe();
+    } else if (key === 'users') {
+      this.loadUsers();
     } else {
       this.loadCategories(key);
     }
@@ -596,6 +706,54 @@ export class AdminDashboardComponent implements OnInit {
     this.api.getItems(undefined, this.selectedCategorySlug).subscribe({
       next: (items) => { this.items = items; this.loadingItems = false; },
       error: () => { this.loadingItems = false; }
+    });
+  }
+
+  // --- Users ---
+  loadUsers(): void {
+    this.loadingUsers = true;
+    this.api.getUsers().subscribe({
+      next: (data) => { this.users = data; this.loadingUsers = false; },
+      error: () => { this.loadingUsers = false; this.showToast('Kullanıcılar yüklenemedi.', true); }
+    });
+  }
+
+  openUserForm(): void {
+    this.userForm = { username: '', email: '', password: '', is_staff: false };
+    this.showUserForm = true;
+  }
+
+  cancelUserForm(): void {
+    this.showUserForm = false;
+  }
+
+  saveUser(): void {
+    if (!this.userForm.username.trim() || !this.userForm.password.trim()) {
+      this.showToast('Kullanıcı adı ve şifre zorunludur.', true);
+      return;
+    }
+    this.saving = true;
+    this.api.createUser(this.userForm).subscribe({
+      next: () => {
+        this.saving = false;
+        this.cancelUserForm();
+        this.loadUsers();
+        this.showToast('Kullanıcı oluşturuldu.');
+      },
+      error: (err) => {
+        this.saving = false;
+        const msg = Object.values(err.error || {}).flat().join(' ') || 'Hata oluştu.';
+        this.showToast(msg, true);
+      }
+    });
+  }
+
+  deleteUser(u: any): void {
+    if (u.id === this.currentUserId) return;
+    if (!confirm(`"${u.username}" kullanıcısını silmek istediğinize emin misiniz?`)) return;
+    this.api.deleteUser(u.id).subscribe({
+      next: () => { this.loadUsers(); this.showToast('Kullanıcı silindi.'); },
+      error: () => this.showToast('Silme sırasında hata oluştu.', true)
     });
   }
 

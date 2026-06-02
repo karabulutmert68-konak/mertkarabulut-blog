@@ -112,6 +112,23 @@ export class ApiService {
     return this.http.delete<void>(`${this.baseUrl}/categories/${id}/`, { headers: this.authHeaders() });
   }
 
+  // --- User Management (admin only) ---
+  public getUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/users/`, { headers: this.authHeaders() });
+  }
+
+  public createUser(data: { username: string; email: string; password: string; is_staff: boolean }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/users/`, data, { headers: this.authHeaders() });
+  }
+
+  public deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/users/${id}/`, { headers: this.authHeaders() });
+  }
+
+  public updateUser(id: number, data: Partial<{ username: string; email: string; is_staff: boolean }>): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/users/${id}/`, data, { headers: this.authHeaders() });
+  }
+
   // --- ContentItem WRITE ---
   public createItem(data: FormData): Observable<ContentItem> {
     return this.http.post<ContentItem>(`${this.baseUrl}/items/`, data, { headers: this.authHeaders() });
