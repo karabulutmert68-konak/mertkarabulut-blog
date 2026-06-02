@@ -15,4 +15,5 @@ EXPOSE 8000
 
 CMD python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput && \
+    python manage.py create_admin && \
     gunicorn core.wsgi --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120
