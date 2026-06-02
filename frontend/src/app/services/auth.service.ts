@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface User {
   id: number;
@@ -14,9 +15,9 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiTokenUrl = 'http://localhost:8000/api/token/';
-  private apiRegisterUrl = 'http://localhost:8000/api/register/';
-  private apiMeUrl = 'http://localhost:8000/api/me/';
+  private apiTokenUrl = `${environment.apiUrl}/token/`;
+  private apiRegisterUrl = `${environment.apiUrl}/register/`;
+  private apiMeUrl = `${environment.apiUrl}/me/`;
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   private currentUserSubject = new BehaviorSubject<User | null>(null);

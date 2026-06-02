@@ -28,7 +28,7 @@ const SECTIONS: { key: SectionKey; label: string }[] = [
         <h1 style="margin:0;"><span style="color:var(--primary);">/</span> Yönetim Paneli</h1>
         <div style="display:flex; align-items:center; gap:16px;">
           <span style="color:var(--secondary); font-size:0.9rem;">{{ user?.username }}</span>
-          <a href="http://localhost:8000/api/docs/" target="_blank" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem;">Swagger API</a>
+          <a href="https://backend-mertkarabulut.onrender.com/api/docs/" target="_blank" class="btn btn-outline" style="padding:6px 14px; font-size:0.85rem;">Swagger API</a>
           <button class="btn btn-outline" style="border-color:var(--error); color:var(--error);" (click)="logout()">Çıkış</button>
         </div>
       </div>
