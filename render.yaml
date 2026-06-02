@@ -27,7 +27,6 @@ services:
   - type: web
     name: mertkarabulut-blog
     runtime: static
-    region: frankfurt
     rootDir: frontend
     buildCommand: npm ci --legacy-peer-deps && npx ng build --configuration production
     staticPublishPath: dist/frontend/browser
